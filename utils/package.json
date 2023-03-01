@@ -1,0 +1,16 @@
+{
+  "name": "utils",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@blockcerts/cert-verifier-js": "^6.5.1",
+    "@vaultie/lds-merkle-proof-2019": "^0.0.10",
+    "ethers": "^5.7.2"
+  }
+}

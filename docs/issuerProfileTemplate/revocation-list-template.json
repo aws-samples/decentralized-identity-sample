@@ -1,0 +1,7 @@
+{
+    "@context": "https://w3id.org/openbadges/v2",
+    "id": "<cloudfront endpoint>revocation-list.json",
+    "type": "RevocationList",
+    "issuer": "<cloudfront endpoint>/issuer-profile.json",
+    "revokedAssertions": []
+}
