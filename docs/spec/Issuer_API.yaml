@@ -1,0 +1,81 @@
+swagger: "2.0"
+
+info:
+  version: 1.0.0
+  title: IssuerAPI
+  description: |
+    - Issuer用のAPI仕様書
+schemes:
+  - https
+host: APIGATEWAY_ENDPOINT
+basePath: /
+
+tags:
+  - name: "Verifiable Credential発行"
+    description: Verifiable Credentialの発行に関するエンドポイント
+# エンドポイント
+paths:
+  /issue:
+    post:
+      summary:
+        Verifiable Credentialを発行する
+      tags:
+        - VC発行
+      parameters:
+        - name: id
+          in: path
+          description: 作成するVerifiableCredentialのID
+          required: true
+          type: "string"
+        - name: name
+          in: path
+          description: 作成するVerifiableCredentialの名前
+          required: true
+          type: "string"
+        - name: address
+          in: path
+          description: 作成するVerifiableCredentialの住所
+          required: true
+          type: "string"
+        - name: phoneNumber
+          in: path
+          description: 作成するVerifiableCredentialの電話番号
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: Issuerの秘密鍵で電子署名をしたVerifiable Credentialを返す
+          schema:
+            type: object
+            example: [
+              {
+                "@context": [
+                  "https://www.w3.org/2018/credentials/v1",
+                  {
+                  "name": "https://schema.org/name",
+                  "address": "https://schema.org/Text",
+                  "phoneNumber": "https://schema.org/telephone"
+                  },
+                  "https://w3id.org/blockcerts/v3"
+                ],
+                "id": "xxxxxxxx",
+                "type": [
+                  "VerifiableCredential",
+                  "BlockcertsCredential"
+                ],
+                "issuer": "https://xxxxxxxxxxxxxx.cloudfront.net/issuer-profile.json",
+                "issuanceDate": "2022-01-01T19:33:24Z",
+                "credentialSubject": {
+                  "name": "tanaka tarou",
+                  "address": "tokyo chiyoda",
+                  "phoneNumber": "000-0000-0000"
+                },
+                "proof": {
+                  "type": "MerkleProof2019",
+                  "created": "2023-01-17T02:07:16.159411",
+                  "proofValue": "z7veGu1qoKR3AS5LFDufmkRBtetTpjSLHzpsQWGQQGs6AZhdcJUA2F9EjRh8ZhNBzBVpMVtkYoQgdBc1tDbLSfnPMRAzhFfJAh5iuh7ApPDfQoQzata6WD76auRKE5ukiz1yLHcNCtC9G3cjSs7z5fqAWWgE6Y3iekCvqiM5D2nKPgsy6jw8e43RFqxBQm6J1LVPFxdKH4aUtstdWCuEDv84eU36qjDvTX5P7G7JjbC2Cn2wxA1qvXZMpeGhG15Wq9nFQDDMgT76W52fP75rhSkoRWDDAYNcH8yZ4Lsvg99v71URbFzTTd",
+                  "proofPurpose": "assertionMethod",
+                  "verificationMethod": "did:ethr:0x5:0xD9bB04cF7147cBcdc03052DF5dA64af400d710b1"
+                }
+                }
+            ]

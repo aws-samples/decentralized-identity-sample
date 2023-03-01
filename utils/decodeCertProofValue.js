@@ -1,0 +1,5 @@
+const { Decoder } = require("@vaultie/lds-merkle-proof-2019");
+const proofValueBase58 =
+  "z7veGu1qoKR3AS5LqhP7emXYCzGSbSunhwnW4Q2B7HMPRoVyNqxMZGjEMtgKK7m1RtULZvFeMukSmJXi7ipNStWQS9vL5NjtZDcnMV7XGv1TBnwdpKqeg1ecHyzLmXddiHUJYy5eVswRcJtUa3FRyeiDbP5RoyAW9uhnCto6NELbA8QRNm3MMsSpvuu51hTsT9NCy3UqekApYewdp2WdYdXojZYDKzFtH98ULLtKfagcV37gvvbz2qaqif8zJ1SCDBz2MwQWHGhYimqxJANAspxG58m4r4YvnRG4L57oLpZoiaiwqKNgZF";
+const decoder = new Decoder(proofValueBase58);
+console.log(decoder.decode());

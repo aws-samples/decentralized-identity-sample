@@ -1,0 +1,369 @@
+swagger: "2.0"
+
+info:
+  version: 1.0.0
+  title: HolderAPI
+  description: |
+    - Holder用のAPI仕様書
+schemes:
+  - https
+host: APIGATEWAY_ENDPOINT
+basePath: /
+
+tags:
+  - name: "VerifiableCredential"
+    description: Verifiable Credentialに関するエンドポイント
+  - name: "Identifier"
+    description: Identifierと鍵ペアに関するエンドポイント
+  - name: "JWT"
+    description: DID DocumentにDelegateしたアドレスであればJWTの作成が可能。JWTはDelegateされていればアクセス可能なサイトの認証で使用する。
+  - name: "Document"
+    description: DIDドキュメントに関するエンドポイント
+  - name: "DownloadVC"
+    description: JWTを用いてVerifiableCredentialをダウンロードするためのエンドポイント
+# エンドポイント
+paths:
+  /vc:
+    get:
+      summary:
+        保有しているVerifiable Credentialの一覧を取得する
+      tags:
+        - VerifiableCredential
+      responses:
+        200:
+          description: 出力結果はXML形式
+          schema:
+            type: object
+            example: <?xml version="1.0" encoding="UTF-8"?><ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>xxxxxxxxxxxxxx-holder-vc-bucket</Name><Prefix>test4/</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><Delimiter>/</Delimiter><IsTruncated>false</IsTruncated><Contents><Key>test4/testFileName.json</Key><LastModified>2023-01-11T06:23:42.000Z</LastModified><ETag>&quot;1b2813efb08dd60c3657fbd1f17cdbcd&quot;</ETag><Size>995</Size><Owner><ID>89666782051d285fdeb236a5209c937311cfcf195d545ad7f7e460b487ebb44e</ID><DisplayName>fsatsuki+practice</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>test4/testFileName2.json</Key><LastModified>2023-01-17T02:07:34.000Z</LastModified><ETag>&quot;0c050ce17e6c3804abafa2ac0a667888&quot;</ETag><Size>995</Size><Owner><ID>89666782051d285fdeb236a5209c937311cfcf195d545ad7f7e460b487ebb44e</ID><DisplayName>fsatsuki+practice</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+
+  /vc/{filename}:
+    get:
+      summary:
+        Verifiable Credentialをファイル名を指定して取得する
+      tags:
+        - VerifiableCredential
+      parameters:
+        - in: path
+          name: filename
+          description: 取得するファイル名
+          schema:
+            type: string
+      responses:
+        200:
+          description: Verifiable CredentialのJSONオブジェクト
+          schema:
+            type: object
+            example: {"@context":["https://www.w3.org/2018/credentials/v1",{"name":"https://schema.org/name","address":"https://schema.org/Text","phoneNumber":"https://schema.org/telephone"},"https://w3id.org/blockcerts/v3"],"id":"xxxxxxxx","type":["VerifiableCredential","BlockcertsCredential"],"issuer":"https://xxxxxxxxxxxxxx.cloudfront.net/issuer-profile.json","issuanceDate":"2022-01-01T19:33:24Z","credentialSubject":{"name":"tanaka tarou","address":"tokyo chiyoda","phoneNumber":"000-0000-0000"},"proof":{"type":"MerkleProof2019","created":"2023-01-11T00:29:49.597705","proofValue":"z7veGu1qoKR3AS5LFDufmkRBtetTpjSLHzpsQWGQQGs6AZhdcJUA2F9EjRh8ZhNBzBVpMVtkYoQgdBc1tDbLSfnPMRAzhFfJAh5iuh7ApPDfQoQzata6WD76auRKE5ukiz1yLHcNCtC9G3cjSs7z5fqAWWgE6Y3iekCvqiM5D2nKPgsy6jw8e43RFqxBQm6J1LVPFxdKH4aUtstdWCuEDv84eU36qjD3E4q21mLEReWds7Gi18h5bNNGW9DCKgpCrS8UBx6hFhEVgUPUUyZpoV4NGHtcHchp3t4WE9wLfd6PsiTfrPvh5P","proofPurpose":"assertionMethod","verificationMethod":"did:ethr:0x5:0xD9bB04cF7147cBcdc03052DF5dA64af400d710b1"}}
+    put:
+      summary:
+        Verifiable Credentialをファイル名を指定してアップロードする
+      tags:
+        - VerifiableCredential
+      parameters:
+        - in: path
+          name: filename
+          description: 保存するファイル名
+          schema:
+            type: string
+        - name: body
+          in: body
+          description: アップロードするVerifiable Credentialのオブジェクト
+          schema:
+            type: object
+            required:
+              - "@contents"
+              - credentialSubject
+              - id
+              - issuanceDate
+              - issuer
+              - proof
+              - type
+            properties:
+              "@contents":
+                type: object
+              credentialSubject:
+                type: object
+              id:
+                type: string
+              issuanceDate:
+                type: string
+              issuer:
+                type: string
+              proof:
+                type: object
+              type:
+                type: object
+      responses:
+        200:
+          description: 成功
+  /identifier:
+    get:
+      summary:
+        保有しているIdentifierと鍵ペアの一覧を取得
+      tags:
+        - Identifier
+      responses:
+        200:
+          description: DynamoDBから取得した公開鍵、アドレス、identifierを返す
+          schema:
+            type: object
+            example: [{"publicKey":{"S":"0x03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e"},"address":{"S":"0xcCbE7F556A4d7F929C5718b38AFb0712300259eC"},"identifier":{"S":"0x03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e"}}]
+    post:
+      summary:
+        Identifierと鍵ペアを作成しDynamoDBに記録する
+      tags:
+        - Identifier
+      responses:
+        200:
+          description: 成功
+
+  /jwt:
+    get:
+      summary:
+        JWtの発行
+      tags:
+        - JWT
+      parameters:
+        - in: query
+          name: identifier
+          description: jwtを発行するidentifier
+          schema:
+            type: string
+        - in: query
+          name: address
+          description: JWTに電子署名をする鍵ペアのアドレスを指定する
+          schema:
+            type: string
+      responses:
+        200:
+          description: 電子署名をしたJWTを返す
+          schema:
+            type: string
+            example: "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NkstUiJ9.eyJpYXQiOjE2NzM5MzM5NTQsImlzcyI6ImRpZDpldGhyOjB4NToweEQ5YkIwNGNGNzE0N2NCY2RjMDMwNTJERjVkQTY0YWY0MDBkNzEwYjEifQ.X14HDeDI_NTQwie04XZPvxx7WkfwhIfQ-cGMfE8kCVDWgfByFpgZ7HrCU5bdwMXQgwKreZGI1NVXmWyevZRsTgE"
+
+    post:
+      summary:
+        JWtの検証
+      tags:
+        - JWT
+      parameters:
+        - in: query
+          name: identifier
+          description: jwtを検証するidentifier
+          schema:
+            type: string
+        - in: query
+          name: jwt
+          description: 検証するJWT
+          schema:
+            type: string
+      responses:
+        200:
+          description: 検証結果
+          schema:
+            type: object
+            example: {"issuer":"did:ethr:0x5:0x03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e","payload":{"iat":1673934072,"iss":"did:ethr:0x5:0x03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e"}}
+
+  /document:
+    get:
+      summary:
+        DID Documentの取得
+      tags:
+        - Document
+      parameters:
+        - in: query
+          name: did_url
+          description: 取得するDID Documentのアドレス
+          schema:
+            type: string
+      responses:
+        200:
+          description: DID Documentを返す
+          schema:
+            type: object
+            example: {"didDocument":{"@context":["https://www.w3.org/ns/did/v1","https://w3id.org/security/suites/secp256k1recovery-2020/v2"],"id":"did:ethr:0x5:0x03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e","verificationMethod":[{"id":"did:ethr:0x5:0x03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e#controller","type":"EcdsaSecp256k1RecoveryMethod2020","controller":"did:ethr:0x5:0x03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e","blockchainAccountId":"eip155:5:0xcCbE7F556A4d7F929C5718b38AFb0712300259eC"},{"id":"did:ethr:0x5:0x03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e#controllerKey","type":"EcdsaSecp256k1VerificationKey2019","controller":"did:ethr:0x5:0x03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e","publicKeyHex":"03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e"},{"id":"did:ethr:0x5:0x03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e#delegate-1","type":"EcdsaSecp256k1RecoveryMethod2020","controller":"did:ethr:0x5:0x03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e","blockchainAccountId":"eip155:5:0x088803d30548857da9F6bfae92BeC0536C8030b3"}],"authentication":["did:ethr:0x5:0x03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e#controller","did:ethr:0x5:0x03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e#controllerKey"],"assertionMethod":["did:ethr:0x5:0x03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e#controller","did:ethr:0x5:0x03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e#controllerKey","did:ethr:0x5:0x03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e#delegate-1"],"service":[{"id":"did:ethr:0x5:0x03151c2fc618abad24ec0e994d7824cee50a4354979c0cb9e1fa22bf643a5e864e#service-1","type":"test","serviceEndpoint":"https://yw627e1np3.execute-api.ap-northeast-1.amazonaws.com/prod//download/test4/testFileName.json\t"}]}}
+
+  /owner:
+    get:
+      summary:
+        DID Documentのオーナーを取得
+      tags:
+        - Document
+      parameters:
+        - in: query
+          name: identifier
+          description: 取得するDID DocumentのIdentifier
+          schema:
+            type: string
+      responses:
+        200:
+          description: DID Documentのオーナー
+          schema:
+            type: string
+            example: "0xcCbE7F556A4d7F929C5718b38AFb0712300259eC"
+
+    post:
+      summary:
+        DID Documentのオーナーを変更
+      tags:
+        - Document
+      parameters:
+        - name: body
+          in: body
+          description: DID Documentのオーナーを変更するためのパラメータ
+          schema:
+            type: object
+            required:
+              - signerAddress
+              - identifier
+              - new_owner_address
+            properties:
+              signerAddress:
+                type: string
+              identifier: 
+                type: string
+              new_owner_address:
+                type: string
+
+      responses:
+        200:
+          description: 成功
+
+  /delegate: 
+    post:
+      summary:
+        DID DocumentにDelegateアドレスを追加する
+      tags:
+        - Document
+      parameters:
+        - name: body
+          in: body
+          description: DID DocumentにDelegateアドレスを追加するためのパラメータ
+          schema:
+            type: object
+            required:
+              - signerAddress
+              - identifier
+              - delegate_address
+              - delegate_type
+              - delegate_expiresIn
+            properties:
+              signerAddress:
+                type: string
+              identifier: 
+                type: string
+              delegate_address:
+                type: string
+              delegate_type:
+                type: string
+              delegate_expiresIn:
+                type: string
+
+      responses:
+        200:
+          description: 成功
+
+    delete:
+      summary:
+        DID DocumentからDelegateアドレスを削除する
+      tags:
+        - Document
+      parameters:
+        - name: body
+          in: body
+          description: DID DocumentからDelegateアドレスを削除するためのパラメータ
+          schema:
+            type: object
+            required:
+              - signerAddress
+              - identifier
+              - delegate_address
+              - delegate_type
+            properties:
+              signerAddress:
+                type: string
+              identifier: 
+                type: string
+              delegate_address:
+                type: string
+              delegate_type:
+                type: string
+      responses:
+        200:
+          description: 成功
+
+  /attribute: 
+    post:
+      summary:
+        DID DocumentにAttributeを追加する
+      tags:
+        - Document
+      parameters:
+        - name: body
+          in: body
+          description: DID DocumentにAttributeを追加するためのパラメータ
+          schema:
+            type: object
+            required:
+              - signerAddress
+              - identifier
+              - attribute_path
+              - attribute_param
+              - attribute_expiresIn
+            properties:
+              signerAddress:
+                type: string
+              identifier: 
+                type: string
+              attribute_path:
+                type: string
+              attribute_param:
+                type: string
+              attribute_expiresIn:
+                type: string
+
+      responses:
+        200:
+          description: 成功
+
+    delete:
+      summary:
+        DID DocumentからAttributeを削除する
+      tags:
+        - Document
+      parameters:
+        - name: body
+          in: body
+          description: DID DocumentからAttributeを削除するためのパラメータ
+          schema:
+            type: object
+            required:
+              - signerAddress
+              - identifier
+              - attribute_path
+              - attribute_param
+            properties:
+              signerAddress:
+                type: string
+              identifier: 
+                type: string
+              attribute_path:
+                type: string
+              attribute_param:
+                type: string
+      responses:
+        200:
+          description: 成功
+
+  /download:
+    get:
+      summary:
+        jwtを使用してVerifiable Credentialが保存されているS3の署名付きURLを取得する。
+      tags:
+        - DownloadVC
+      responses:
+        200:
+          description: Verifiable Credentialが保存されているS3の署名付きURL
+          schema:
+            type: object
+            example: {"downloadUrl":"https://xxxxxxxxxxxxxx-holder-vc-bucket.s3.ap-northeast-1.amazonaws.com/test4/testFileName.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=..."}
