@@ -1,5 +1,5 @@
 from __future__ import print_function
-from jinja2 import Template, Environment, FileSystemLoader
+from jinja2 import Template, Environment, FileSystemLoader, select_autoescape
 
 import subprocess
 import os
@@ -38,7 +38,10 @@ def get_secretmanager(secret_name):
 # 署名前の証明書を作成.ファイルに保存する
 def readVerifiableCredentialTemplate(param=None):
   #テンプレート読み込み
-  env = Environment(loader=FileSystemLoader('./template', encoding='utf8'))
+  env = Environment(
+    autoescape=select_autoescape(['html', 'xml']),
+    loader=FileSystemLoader('./template', encoding='utf8')
+    )
   tmpl = env.get_template('verifiable-credential.json.j2')
 
   if not param:
