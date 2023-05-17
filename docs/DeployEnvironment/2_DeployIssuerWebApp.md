@@ -7,6 +7,9 @@ Issuer用のWebAppをデプロイ/Deploy WebApp for Issuer
 Build to issuer webapp
 
 ```
+$ pwd
+decentralized-identity-sample
+
 $ cd issuerwebapp/
 $ npm install
 $ npm run build
@@ -15,6 +18,9 @@ $ npm run build
 builded package are stored in `issuerwebapp/dist/`
 
 ```
+$ pwd
+decentralized-identity-sample/issuerwebapp
+
 $ ls dist/
 css  favicon.ico  fonts  index.html  js
 ```
@@ -23,6 +29,11 @@ css  favicon.ico  fonts  index.html  js
 Assuming it's a demo environment, set environment variables to limit the IP addresses that can be accessed.
 ```
 $ export SOURCE_IP_ADDRESS=xxx.xxx.xxx.xxx/32
+```
+
+- Ethereum Nodeのエンドポイント  
+Endpoint of Ethereum Node  
+```
 $ export ETHEREUM_ENDPOINT=https://ETHEREUM_ENDPOINT
 ```
 
@@ -46,10 +57,15 @@ $ export ISSUER_PRIVATEKEY=0x.....
 $ export ISSUER_PROFILE_URL=<cloudfront endpoint>/issuer-profile.json
 ```
 
-- issuerの設定ファイルを編集する. 設定内容は[証明書の発行](../コマンドラインで証明書の発行.md)を参照  
-Modify issuer's config file. Please check at [Issuance of certificates](../コマンドラインで証明書の発行.md)
+- issuerの設定ファイルを編集する. 設定内容は[証明書の発行](../HowToUse/IssuingVCWithCLI.md)を参照  
+Modify issuer's config file. Please check at [Issuance of certificates](../HowToUse/IssuingVCWithCLI.md)
 
 ```
+$ cd ../cdk
+$ pwd
+decentralized-identity-sample/cdk
+
+$ cp lambda/python/Issue_vc/conf-template.ini lambda/python/issue_vc/conf.ini 
 $ vi lambda/python/issue_vc/conf.ini 
 ```
 
@@ -57,6 +73,9 @@ $ vi lambda/python/issue_vc/conf.ini
 Deploy with CDK. Please note of results.
 
 ```
+$ pwd
+decentralized-identity-sample/cdk
+
 $ cdk deploy IssuerWebapp
 ```
 ```
@@ -73,6 +92,10 @@ IssuerWebapp.UserPoolWEBClientIdForIssuerWebApp = ddddddddddddd
 - CDKの出力結果を使用してvuejs用の設定ファイルを作成する  
 Modify vue.js config with CDK results.
 ```
+$ cd ../issuerwebapp/
+$ pwd
+decentralized-identity-sample/issuerwebapp
+
 $ vi .env.local
 ```
 ```
@@ -85,12 +108,19 @@ VUE_APP_USER_POOL_WEB_CLIENT_ID=ddddddddddddd
 - 設定ファイルを反映するために再度webappをビルドする.  
 Build the webapp again to reflect the configuration files.  
 ```
+$ pwd
+decentralized-identity-sample/issuerwebapp
+
 $ npm run build
 ```
 
 - 再度CDKでデプロイすることで変更した設定ファイルの内容が反映される。  
 The contents of the changed configuration file are reflected by deploying again with CDK.
 ```
+$ cd ../cdk/
+$ pwd
+decentralized-identity-sample/cdk
+
 $ cdk deploy IssuerWebapp
 ```
 

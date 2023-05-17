@@ -6,6 +6,9 @@ Holder用のWebAppをデプロイ/Deploy  WebApp for Holder
 - holderwebappをビルドする  
 Build holder webapp.
 ```
+$ pwd
+decentralized-identity-sample
+
 $ cd holderwebapp/
 $ npm install
 $ npm run build
@@ -14,6 +17,9 @@ $ npm run build
 - ビルド済み資材が`holderwebapp/dist/`に保存されたことを確認する  
 builded package are stored in `holderwebapp/dist/`  
 ```
+$ pwd
+decentralized-identity-sample/holderwebapp
+
 $ ls dist/
 css  favicon.ico  fonts  index.html  js
 ```
@@ -41,6 +47,10 @@ $ export ACCESS_FROM_REGION=JP
 Deploy with CDK. Plelase note of the results.
 
 ```
+$ cd ../cdk/
+$ pwd
+decentralized-identity-sample/cdk
+
 $ cdk deploy HolderWebapp
 ```
 ```
@@ -55,6 +65,10 @@ HolderWebapp.UserPoolWEBClientIdForHolderWebApp = ddddddddddddd
 - CDKの出力結果を使用してvuejs用の設定ファイルを作成する  
 Modify vue.js config with CDK results.
 ```
+$ cd ../holderwebapp/
+$ pwd
+decentralized-identity-sample/holderwebapp
+
 $ vi .env.local
 ```
 ```
@@ -67,12 +81,19 @@ VUE_APP_USER_POOL_WEB_CLIENT_ID=ddddddddddddd
 - 設定ファイルを反映するために再度webappをビルドする  
 Build the webapp again to reflect the configuration files.  
 ```
+$ pwd
+decentralized-identity-sample/holderwebapp
+
 $ npm run build
 ```
 
 - 再度CDKでデプロイすることで変更した設定ファイルの内容が反映される。  
 The contents of the changed configuration file are reflected by deploying again with CDK.
 ```
+$ cd ../cdk/
+$ pwd
+decentralized-identity-sample/cdk
+
 $ cdk deploy HolderWebapp
 ```
 

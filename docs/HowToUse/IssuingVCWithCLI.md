@@ -44,7 +44,7 @@ $ vi /tmp/issuer.pk
 0x.....
 ```
 
-## 発行する証明書の設定
+## 発行する証明書の設定/Set the certificate to be issued
 
 - 証明書を発行するための設定ファイルを編集.  
 Edit configuration files for issuing certificates.
