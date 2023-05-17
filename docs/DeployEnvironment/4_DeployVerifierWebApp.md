@@ -7,6 +7,9 @@ Verifier用のWebAppをデプロイ/ Deploy WebApp for Verifier
 Build verifier webapp
 
 ```
+$ pwd
+decentralized-identity-sample
+
 $ cd verifierwebapp/
 $ npm install
 $ npm run build
@@ -14,6 +17,9 @@ $ npm run build
 - ビルド済み資材が`verifierwebapp/dist/`に保存されたことを確認する  
 builded package are stored in `verifierwebapp/dist/`  
 ```
+$ pwd
+decentralized-identity-sample/verifierwebapp
+
 $ ls dist/
 css  favicon.ico  fonts  index.html  js
 ```
@@ -22,6 +28,11 @@ css  favicon.ico  fonts  index.html  js
 Assuming it's a demo environment, set environment variables to limit the IP addresses that can be accessed.
 ```
 $ export SOURCE_IP_ADDRESS=xxx.xxx.xxx.xxx/32
+```
+
+- Ethereum Nodeのエンドポイント  
+Endpoint of Ethereum Node  
+```
 $ export ETHEREUM_ENDPOINT=https://ETHEREUM_ENDPOINT
 ```
 
@@ -41,6 +52,10 @@ $ export ACCESS_FROM_REGION=JP
 - CDKを使用してデプロイする。出力結果はメモしておくこと  
 Deploy with CDK. Please note of the results.
 ```
+$ cd ../cdk/
+$ pwd
+decentralized-identity-sample/cdk
+
 $ cdk deploy VerifierWebapp
 ```
 ```
@@ -54,6 +69,10 @@ VerifierWebapp.UserPoolWEBClientIdForVerifierWebApp = ddddddddddddd
 - CDKの出力結果を使用してvuejs用の設定ファイルを作成する  
 Modify vue.js config with CDK results.
 ```
+$ cd ../verifierwebapp/
+$ pwd
+decentralized-identity-sample/verifierwebapp
+
 $ vi .env.local
 ```
 ```
@@ -66,12 +85,19 @@ VUE_APP_USER_POOL_WEB_CLIENT_ID=ddddddddddddd
 - 設定ファイルを反映するために再度webappをビルドする  
 Build the webapp again to reflect the configuration files.  
 ```
+$ pwd
+decentralized-identity-sample/verifierwebapp
+
 $ npm run build
 ```
 
 - 再度CDKでデプロイすることで変更した設定ファイルの内容が反映される。  
 The contents of the changed configuration file are reflected by deploying again with CDK.
 ```
+$ cd ../cdk/
+$ pwd
+decentralized-identity-sample/cdk
+
 $ cdk deploy VerifierWebapp
 ```
 

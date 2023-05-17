@@ -128,6 +128,9 @@ $ vi cdk/issuerProfile/revocation-list.json
 - cdkでissuer profileをS3 Bucketにデプロイ  
 Deploy issuer profile to S3 Bucket with CDK
 ```
+$ pwd 
+decentralized-identity-sample/cdk
+
 $ cdk deploy DIDIssuerProfileDestributionStack
 ```
 

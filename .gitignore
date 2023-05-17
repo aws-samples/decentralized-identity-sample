@@ -2,3 +2,4 @@
 .env
 cdk/lambda/conf.ini
 cdk/lambda/python/Issue_vc/conf.ini
+cdk/issuerProfile/*.json
