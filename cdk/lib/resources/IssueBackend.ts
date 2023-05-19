@@ -143,7 +143,7 @@ export class IssueBackend extends Construct {
         webAclArn: apiWaf.attrArn,
       }
     );
-    association.addDependsOn(apiWaf);
+    association.addDependency(apiWaf);
 
     const api_issue = api.root.addResource("issue");
     this.defineAPIRoute("POST", api_issue, funcIssue, authorizer);

@@ -259,7 +259,7 @@ export class HolderBackend extends Construct {
         webAclArn: apiWaf.attrArn,
       }
     );
-    association.addDependsOn(apiWaf);
+    association.addDependency(apiWaf);
 
     const restApiRole = new iam.Role(this, "Role", {
       assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),

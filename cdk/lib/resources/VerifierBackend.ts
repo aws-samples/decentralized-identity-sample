@@ -168,7 +168,7 @@ export class VerifierBackend extends Construct {
         webAclArn: apiWaf.attrArn,
       }
     );
-    association.addDependsOn(apiWaf);
+    association.addDependency(apiWaf);
 
     const filesApi = api.root.addResource("vc");
     const verifyVcApi = filesApi.addResource("verify");
