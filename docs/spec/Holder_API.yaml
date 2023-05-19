@@ -361,6 +361,22 @@ paths:
         jwtを使用してVerifiable Credentialが保存されているS3の署名付きURLを取得する。
       tags:
         - DownloadVC
+      parameters:
+        - in: query
+          name: identifier
+          description: ダウンロード対象のdidのidentifier
+          schema:
+            type: string
+        - in: query
+          name: svcName
+          description: attributeのサービス名
+          schema:
+            type: string
+        - in: header
+          name: Authorization
+          description: JWT
+          schema:
+            type: string
       responses:
         200:
           description: Verifiable Credentialが保存されているS3の署名付きURL
