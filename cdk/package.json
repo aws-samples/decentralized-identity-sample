@@ -19,7 +19,7 @@
   "dependencies": {
     "@aws-cdk/aws-lambda-python-alpha": "^2.56.0-alpha.0",
     "@aws-prototyping-sdk/pdk-nag": "^0.14.7",
-    "aws-cdk-lib": "^2.80.0",
+    "aws-cdk-lib": "^2.97.1",
     "cdk-nag": "^2.21.86",
     "cdk-remote-stack": "^2.0.10",
     "constructs": "^10.0.0",
