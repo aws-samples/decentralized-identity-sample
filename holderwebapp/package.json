@@ -10,7 +10,7 @@
   "dependencies": {
     "@aws-amplify/ui-vue": "^3.1.1",
     "@mdi/font": "5.9.55",
-    "aws-amplify": "^5.0.7",
+    "aws-amplify": "^5.3.12",
     "buffer": "^6.0.3",
     "core-js": "^3.8.3",
     "did-resolver": "^4.0.1",
